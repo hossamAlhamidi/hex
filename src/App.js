@@ -32,32 +32,33 @@ export default App;
 export const RandomColorGenerator = () => {
   const [randomColor, setRandomColor] = useState(generateRandomColor());
   const [correctColor, setCorrectColor] = useState(randomColor);
+  const [options, setOptions] = useState(generateOptionsColors());
   const [message, setMessage] = useState('');
 
+  // know correct color when ever we have new generated random color so we can set it as correct color
   useEffect(() => {
-    // setRandomColor(generateRandomColor());
     setCorrectColor(randomColor);
-    // setMessage('');
   }, [randomColor]);
 
-
+  // change options when correct color changes so if you chose wrong color , the option remain the same
+  useEffect(() => {
+    setOptions(generateOptionsColors());
+  }, [correctColor]);
 
   function generateOptionsColors() {
     const options = Array.from({ length: 2 }, () => generateRandomColor());
-    options.push(randomColor)
+    options.push(randomColor);
     return shuffleArray(options);
   }
 
   const handleOptionClick = (selectedColor) => {
     if (selectedColor === correctColor) {
       setRandomColor(generateRandomColor());
-      // setCorrectColor(randomColor);
-      setMessage('')
+      setMessage('');
     } else {
       setMessage('Wrong choice. Try again.');
     }
   };
-
 
   return (
     <div>
@@ -69,10 +70,8 @@ export const RandomColorGenerator = () => {
           margin: '20px auto',
         }}
       />
-      <div>{randomColor}</div>
-      <div>correct {correctColor}</div>
-    
-      {/* <button onClick={handleGenerateColor}>Generate Random Color</button> */}
+      {/* <div>{randomColor}</div>
+      <div>correct {correctColor}</div> */}
 
       <div
         style={{
@@ -82,14 +81,14 @@ export const RandomColorGenerator = () => {
           margin: '20px 0',
         }}
       >
-        {generateOptionsColors().map((option) => (
+        {options.map((option) => (
           <div
             style={{
-              border: '1px solid black',
+              border: '1px solid gray',
               padding: '2px',
               cursor: 'pointer',
-              backgroundColor: 'gray',
-              color: 'white',
+              // backgroundColor: 'lightgray',
+              // color: 'white',
             }}
             onClick={() => handleOptionClick(option)}
           >
@@ -98,7 +97,7 @@ export const RandomColorGenerator = () => {
           </div>
         ))}
       </div>
-      <div style={{color:'red'}}>{message}</div>
+      <div style={{ color: 'red' }}>{message}</div>
     </div>
   );
 };
